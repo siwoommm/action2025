@@ -14,19 +14,27 @@ on : [ push, pull_request ]
 #   pull_request:
 #     types: [ opened, assigned ]
 
-strategy:
-  matrix:
-    os-version : [ macos_latest, ubuntu_latest ]
-    node_version : [10, 12, 14]
+# strategy:
+#   matrix:
+#     os-version : [ macos_latest, ubuntu_latest ]
+#     node_version : [10, 12, 14]
     
 jobs:
   job_1:
     name : My first job
-    runs-on : ${{ matrix.os_version }}
+    runs-on : ubuntu-latest
     steps:
-      - uses : actions/setup-node@v2
+      - uses : actions/checkout@v3
+
+      - name : Install python
+        uses : actions/setup-python@v4
         with:
-          node-version : ${{ matrix.node_version }}
+          python-version: '3.10'
+
+      - name : call youtube api
+        run : python main.py
+        env :
+          YOUTUBE: ${{ secrets.API_KEY }}
   # job_2:
   #   name : My second job
   #   needs : job_1
